@@ -4,6 +4,7 @@ pool:
 variables:
   buildConfiguration: 'Release'
   dotnetSdkVersion: '8.0.x'
+  feed: '$(System.TeamProject)/Tailspin.SpaceGame.Web.Models01' 
 
 steps:
 - task: UseDotNet@2
@@ -35,10 +36,10 @@ steps:
     minorVersion: '0'
     patchVersion: '0'
  
-- task: NuGetCommand@2
+- task: DotNetCoreCLI@2
   displayName: 'Publish NuGet package'
   inputs:
-    command: push
-    feedPublish: '$(System.TeamProject)/Tailspin.SpaceGame.Web.Models01'
-    allowPackageConflicts: true
+    command: 'push'
+    publishVstsFeed: '$(feed)'
+    packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.snupkg'
   condition: succeeded()
